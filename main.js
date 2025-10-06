@@ -169,14 +169,14 @@ function displayStudents() {
       <tbody>
         ${allStudents.map(student => `
           <tr>
-            <td>${student.firstName} ${student.lastName}</td>
-            <td>${student.email}</td>
-            <td>${student.phone}</td>
-            <td>${student.major}</td>
-            <td>${student.gpa}</td>
+            <td>${student.firstName || ''} ${student.lastName || ''}</td>
+            <td>${student.email || ''}</td>
+            <td>${student.phone || ''}</td>
+            <td>${student.major || ''}</td>
+            <td>${student.gpa || ''}</td>
             <td>
-              <button onclick="openEditModal(${student.id})" class="btn-edit">Edit</button>
-              <button onclick="deleteStudentConfirm(${student.id})" class="btn-delete">Delete</button>
+              <button onclick="window.openEditModal(${student.id})" class="btn-edit">Edit</button>
+              <button onclick="window.deleteStudentConfirm(${student.id})" class="btn-delete">Delete</button>
             </td>
           </tr>
         `).join('')}
@@ -270,11 +270,11 @@ function performSearch() {
       <tbody>
         ${results.map(student => `
           <tr>
-            <td>${student.firstName} ${student.lastName}</td>
-            <td>${student.email}</td>
-            <td>${student.phone}</td>
-            <td>${student.major}</td>
-            <td>${student.gpa}</td>
+            <td>${student.firstName || ''} ${student.lastName || ''}</td>
+            <td>${student.email || ''}</td>
+            <td>${student.phone || ''}</td>
+            <td>${student.major || ''}</td>
+            <td>${student.gpa || ''}</td>
           </tr>
         `).join('')}
       </tbody>
@@ -356,8 +356,20 @@ function generateReports() {
   `;
 }
 
+// Clear corrupted data and reset
+function resetData() {
+  localStorage.removeItem('students');
+  students = [];
+  loadFromStorage();
+}
+
 // Event listeners
 document.addEventListener('DOMContentLoaded', function() {
+  // Check if data is corrupted and reset if needed
+  if (students.length > 0 && students.some(s => !s.firstName || !s.email)) {
+    resetData();
+  }
+
   // Show home page by default and load stats
   switchSection('homeSection');
   updateStats();
